@@ -1,0 +1,11 @@
+certifi==2020.12.5
+chardet==4.0.0
+click==7.1.2
+colorlog==4.8.0
+entity-fishing-client==0.7.1
+idna==2.10
+pyfiglet==0.8.post1
+requests==2.25.1
+termcolor==1.1.0
+urllib3==1.26.4
+zenlog==1.1
