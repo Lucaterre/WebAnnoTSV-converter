@@ -131,22 +131,19 @@ def main(file: str,
                              wikidata_id,
                              wikipedia_page_id))
 
-    try:
-        if output.lower() == "csv":
-            to_csv(data,
-                   filename,
-                   out_dirname=output_dir)
-            _report_log(f"Finish with success find your document in out/ directory",
+    if output.lower() == "csv":
+        to_csv(data,
+               filename,
+               out_dirname=output_dir)
+        _report_log(f"Finish with success find your document in out/ directory",
                         type_log="S")
-        if output.lower() == "xml":
-            to_xml(data,
-                   filename,
-                   out_dirname=output_dir,
-                   project_name=project_name)
-            _report_log(f"Finish with success find your document in out/ directory",
+    if output.lower() == "xml":
+        to_xml(data,
+                filename,
+                out_dirname=output_dir,
+                project_name=project_name)
+        _report_log(f"Finish with success find your document in out/ directory",
                         type_log="S")
-    except AttributeError:
-        _report_log(f"you did not specify an output format: 'csv' or 'xml' for {filename} file", type_log='E')
 
 
 if __name__ == '__main__':
