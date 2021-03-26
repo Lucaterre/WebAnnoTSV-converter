@@ -35,6 +35,8 @@ class Annotation:
     wikiname: str
     wikidata_id: str
     wikipedia_id: str
+    truth_start: int
+    truth_stop: int
     id: Optional[str] = None
 
 
@@ -47,6 +49,8 @@ class Span:
     wikiname: Optional[str]
     wikidata_id: Optional[str]
     wikipedia_id: Optional[str]
+    truth_start: int
+    truth_stop: int
     is_token: bool = False
     id: Optional[str] = None
 
@@ -85,16 +89,19 @@ def fetch_wikipedia_prefferedterm_page_id(concept_wikidata: str, api_base: str, 
     client = nerd_client.NerdClient(apiBase=api_base)
     client.api_base = api_base
     content, response = client.get_concept(concept_wikidata, lang=language)
-
-    if language == "en":
-        wikiname = content['preferredTerm']
-        wikipedia_page = content['wikipediaExternalRef']
-    else:
-        # other language (de, fr, es, it)
-        for i in content['multilingual']:
-            if i['lang'] == language:
-                wikiname = i['term']
-                wikipedia_page = i['page_id']
+    try:
+        if language == "en":
+            wikiname = content['preferredTerm']
+            wikipedia_page = content['wikipediaExternalRef']
+        else:
+            # other language (de, fr, es, it)
+            for i in content['multilingual']:
+                if i['lang'] == language:
+                    wikiname = i['term']
+                    wikipedia_page = i['page_id']
+    except:
+        wikipedia_page = -1
+        wikiname = "null"
 
     return wikipedia_page, wikiname
 
@@ -259,12 +266,16 @@ class Reader:
                     wiki_name = annotation_parts[0].wikiname
                     wikidata = annotation_parts[0].wikidata_id
                     wikipedia = annotation_parts[0].wikipedia_id
+                    truth_start = annotation_parts[0].truth_start
+                    truth_stop = annotation_parts[-1].truth_stop
                 else:
                     start = annotation_parts[0].start
                     stop = annotation_parts[0].stop
                     wiki_name = annotation_parts[0].wikiname
                     wikidata = annotation_parts[0].wikidata_id
                     wikipedia = annotation_parts[0].wikipedia_id
+                    truth_start = annotation_parts[0].truth_start
+                    truth_stop = annotation_parts[0].truth_stop
 
                 compacted_annotations.append(Annotation(
                     label=labels[annotation_id],
@@ -274,7 +285,10 @@ class Reader:
                     wikipedia_id=wikipedia,
                     length=stop - start,
                     start=start,
-                    stop=stop))
+                    stop=stop,
+                    truth_start=truth_start,
+                    truth_stop=truth_stop
+                ))
 
             # Extract tokens
             tokens = [span for span in spans if span.is_token]
@@ -322,6 +336,8 @@ class Reader:
         else:
             wikidata_id = re.sub(r'http.+/(Q\d+)\[?.*\]?', r'\1', span_wikidata_id)
             wikipedia_page_id, wiki_name = fetch_wikipedia_prefferedterm_page_id(str(wikidata_id), api_base, language)
+            if wiki_name == "null":
+                wikidata_id = "null"
 
         return SpanAnnotation(
             span=Span(
@@ -332,6 +348,8 @@ class Reader:
                 wikiname=wiki_name,
                 wikidata_id=wikidata_id,
                 wikipedia_id=wikipedia_page_id,
+                truth_start=start,
+                truth_stop=stop,
                 text=span_text,
                 is_token="." not in span_id
             ),

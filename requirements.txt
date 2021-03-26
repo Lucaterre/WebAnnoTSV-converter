@@ -4,6 +4,7 @@ click==7.1.2
 colorlog==4.8.0
 entity-fishing-client==0.7.1
 idna==2.10
+lxml==4.6.3
 pyfiglet==0.8.post1
 requests==2.25.1
 termcolor==1.1.0

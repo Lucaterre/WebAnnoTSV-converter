@@ -6,7 +6,7 @@
 # Licence : MIT
 
 import csv
-import xml.etree.ElementTree as ET
+import lxml.etree as ET
 
 
 def to_csv(data, file_name, out_dirname):
@@ -59,7 +59,7 @@ def to_xml(data, file_name, out_dirname, project_name="my_project"):
         l = ET.SubElement(annotation_tag, 'length')
         l.text = str(length)
 
-    b_xml = ET.tostring(root)
+    b_xml = ET.tostring(root, pretty_print=True, encoding='utf-8')
 
     with open(out_dirname + project_name + ".xml", "wb") as f:
         f.write(b_xml)
