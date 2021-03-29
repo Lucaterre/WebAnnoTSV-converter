@@ -103,8 +103,10 @@ def main(file: str,
                 index_annot = j
                 text = annotation.text
                 label = annotation.label
-                offset_start = annotation.start
-                offset_end = annotation.stop
+                # offset_start = annotation.start
+                # offset_end = annotation.stop
+                truth_start = annotation.truth_start
+                truth_stop = annotation.truth_stop
                 length = annotation.length
                 wikiname = annotation.wikiname
                 wikidata_id = annotation.wikidata_id
@@ -113,8 +115,8 @@ def main(file: str,
                     print(f'\tAnnotation {index_annot}:')
                     print('\t\tText :', text)
                     print("\t\tLabel :", label)
-                    print("\t\tOffset Start : ", f"{offset_start}")
-                    print("\t\tOffset End : ", f"{offset_end}")
+                    print("\t\tOffset Start : ", f"{truth_start}")
+                    print("\t\tOffset End : ", f"{truth_stop}")
                     print("\t\tTotal length : ", length)
                     print("\t\tWikiName : ", wikiname)
                     print("\t\tWikidata ID : ", wikidata_id)
@@ -124,8 +126,8 @@ def main(file: str,
                              index_annot,
                              text,
                              label,
-                             offset_start,
-                             offset_end,
+                             truth_start,
+                             truth_stop,
                              length,
                              wikiname,
                              wikidata_id,
